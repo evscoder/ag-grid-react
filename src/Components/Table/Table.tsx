@@ -26,7 +26,7 @@ const Table: FC<any> = ({ users }) => {
         setDeleteModal(false);
     }
 
-    const onRemove = useCallback(() => {
+    const onRemove = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const selectedNodes = gridRef.current?.api.getSelectedNodes();
@@ -35,7 +35,7 @@ const Table: FC<any> = ({ users }) => {
 
         setRowData(newUsers);
         setDeleteModal(false);
-    }, [rowData]);
+    };
 
     return (
         <div className="ag-theme-alpine" style={{ height: 400, width: 720 }}>
