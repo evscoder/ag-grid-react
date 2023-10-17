@@ -2,9 +2,11 @@ import {FC, useCallback, useRef, useState} from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import Modal from "../Modal/Modal";
 
 const Table: FC<any> = ({ users }) => {
     const [rowData, setRowData] = useState<any>();
+    const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [columnDefs] = useState<any>([
         { field: 'id' },
         { field: 'title' },
@@ -16,6 +18,14 @@ const Table: FC<any> = ({ users }) => {
         setRowData([...users]);
     }, []);
 
+    const onToggleModalDelete = () => {
+        setDeleteModal(true);
+    };
+
+    const onCloseModalDelete = () => {
+        setDeleteModal(false);
+    }
+
     const onRemove = useCallback(() => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -24,12 +34,16 @@ const Table: FC<any> = ({ users }) => {
         const newUsers = rowData.filter((user: any) => selectedId.indexOf(user.id) < 0);
 
         setRowData(newUsers);
+        setDeleteModal(false);
     }, [rowData]);
 
     return (
         <div className="ag-theme-alpine" style={{ height: 400, width: 720 }}>
             <button onClick={onLoadUsers} data-test-id={'btn-add'}>Add users</button>
-            <button onClick={onRemove}>Remove item</button>
+            <button onClick={onToggleModalDelete}>Remove item</button>
+            {deleteModal &&
+                <Modal title={'Remove rows?'} onRemove={onRemove} onClose={onCloseModalDelete}/>
+            }
             <AgGridReact
                 ref={gridRef}
                 rowSelection={'multiple'}
