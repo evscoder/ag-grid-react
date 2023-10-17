@@ -20,7 +20,7 @@ const fetchUsers = createAsyncThunk('userSlice/fetchUsers',
 
             const data = await response.json();
 
-            return data;
+            return data.slice(0, 6);
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore

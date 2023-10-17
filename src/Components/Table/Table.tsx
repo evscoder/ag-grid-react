@@ -1,11 +1,12 @@
-import {FC, useCallback, useRef, useState} from "react";
+import {FC, useRef, useState} from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import styles from './Table.module.css';
 import Modal from "../Modal/Modal";
 
 const Table: FC<any> = ({ users }) => {
-    const [rowData, setRowData] = useState<any>();
+    const [rowData, setRowData] = useState<any>(users);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [columnDefs] = useState<any>([
         { field: 'id' },
@@ -13,10 +14,8 @@ const Table: FC<any> = ({ users }) => {
         { field: 'body' }
     ]);
     const gridRef = useRef<any>(null);
-
-    const onLoadUsers = useCallback(() => {
-        setRowData([...users]);
-    }, []);
+    const inputTitleRef = useRef<any>(null);
+    const inputTextRef = useRef<any>(null);
 
     const onToggleModalDelete = () => {
         setDeleteModal(true);
@@ -24,7 +23,7 @@ const Table: FC<any> = ({ users }) => {
 
     const onCloseModalDelete = () => {
         setDeleteModal(false);
-    }
+    };
 
     const onRemove = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -37,19 +36,46 @@ const Table: FC<any> = ({ users }) => {
         setDeleteModal(false);
     };
 
+    const onAddRow = (event: any) => {
+        event.preventDefault();
+
+        const title = inputTitleRef.current;
+        const body = inputTextRef.current;
+
+        if (!title) {
+            return;
+        }
+
+        setRowData([...rowData, {
+            id: rowData.length + 1,
+            title: title.value,
+            body: body.value ? body.value : 'text ....'
+        }]);
+
+        setDeleteModal(false);
+    }
+
     return (
-        <div className="ag-theme-alpine" style={{ height: 400, width: 720 }}>
-            <button onClick={onLoadUsers} data-test-id={'btn-add'}>Add users</button>
-            <button onClick={onToggleModalDelete}>Remove item</button>
+        <div className={styles.wrapper}>
+            <div className={styles.tools}>
+                <form className={styles.form} action="" onSubmit={onAddRow}>
+                    <input ref={inputTitleRef} type="text"/>
+                    <input ref={inputTextRef} type="text"/>
+                    <button type={'submit'}>Add Row</button>
+                </form>
+                <button onClick={onToggleModalDelete}>Remove item</button>
+            </div>
+            <div className="ag-theme-alpine" style={{ height: 400, width: 720 }}>
+                <AgGridReact
+                    ref={gridRef}
+                    rowSelection={'multiple'}
+                    animateRows={true}
+                    rowData={rowData} columnDefs={columnDefs} editType="fullRow">
+                </AgGridReact>
+            </div>
             {deleteModal &&
                 <Modal title={'Remove rows?'} onRemove={onRemove} onClose={onCloseModalDelete}/>
             }
-            <AgGridReact
-                ref={gridRef}
-                rowSelection={'multiple'}
-                animateRows={true}
-                rowData={rowData} columnDefs={columnDefs} editType="fullRow">
-            </AgGridReact>
         </div>
     );
 };

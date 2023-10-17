@@ -5,8 +5,8 @@ const Modal: FC<any> = ({ title, onRemove, onClose }) => {
         <div className={styles.modal} >
             <div className={styles.modalContent}>
                 <h2>{ title }</h2>
-                <button onClick={onRemove}>Ok</button>
                 <button onClick={onClose}>Cancel</button>
+                <button onClick={onRemove}>Ok</button>
             </div>
         </div>
     );
