@@ -7,7 +7,7 @@ import Modal from "../Modal/Modal";
 
 const Table: FC<any> = ({ users }) => {
     const [rowData, setRowData] = useState<any>(users);
-    const [deleteModal, setDeleteModal] = useState<boolean>(false);
+    const [isModal, setIsModal] = useState<boolean>(false);
     const [columnDefs] = useState<any>([
         { field: 'id' },
         { field: 'title' },
@@ -18,11 +18,7 @@ const Table: FC<any> = ({ users }) => {
     const inputTextRef = useRef<any>(null);
 
     const onToggleModalDelete = () => {
-        setDeleteModal(true);
-    };
-
-    const onCloseModalDelete = () => {
-        setDeleteModal(false);
+        setIsModal(true);
     };
 
     const onRemove = () => {
@@ -33,7 +29,7 @@ const Table: FC<any> = ({ users }) => {
         const newUsers = rowData.filter((user: any) => selectedId.indexOf(user.id) < 0);
 
         setRowData(newUsers);
-        setDeleteModal(false);
+        setIsModal(false);
     };
 
     const onAddRow = (event: any) => {
@@ -42,7 +38,7 @@ const Table: FC<any> = ({ users }) => {
         const title = inputTitleRef.current;
         const body = inputTextRef.current;
 
-        if (!title) {
+        if (!title.value) {
             return;
         }
 
@@ -52,7 +48,7 @@ const Table: FC<any> = ({ users }) => {
             body: body.value ? body.value : 'text ....'
         }]);
 
-        setDeleteModal(false);
+        event.currentTarget.reset();
     }
 
     return (
@@ -73,8 +69,8 @@ const Table: FC<any> = ({ users }) => {
                     rowData={rowData} columnDefs={columnDefs} editType="fullRow">
                 </AgGridReact>
             </div>
-            {deleteModal &&
-                <Modal title={'Remove rows?'} onRemove={onRemove} onClose={onCloseModalDelete}/>
+            {isModal &&
+                <Modal title={'Remove rows?'} onRemove={onRemove} setIsModal={setIsModal}/>
             }
         </div>
     );
