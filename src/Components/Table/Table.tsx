@@ -52,7 +52,7 @@ const Table: FC<any> = ({ users }) => {
     }
 
     return (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} data-testid='table' >
             <div className={styles.tools}>
                 <form className={styles.form} action="" onSubmit={onAddRow}>
                     <input ref={inputTitleRef} type="text"/>

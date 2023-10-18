@@ -1,4 +1,4 @@
-import './App.css'
+import './App.css';
 // import Table from "./Components/Table/Table";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
